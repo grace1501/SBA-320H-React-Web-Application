@@ -7,22 +7,43 @@ function App() {
   const [zipcode, setZipcode] = useState("60559")
   const [weather, setWeather] = useState({})
   
-  useEffect(() => {
-    async function getWeather() {
-      try {
-        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?zip=${zipcode},us&appid=${API_KEY}`)
 
+  // SHOULD NOT USE USEEFFECT: TOO MANY UNNECESSARY CALLs TO API
+  // useEffect(() => {
+  //   async function getWeather() {
+  //     try {
+  //       const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?zip=${zipcode},us&appid=${API_KEY}`)
+
+  //       const data = await response.json()
+  //       setWeather(data)
+  //       console.log(data)
+  //     } catch (e) {
+  //       console.log(e)
+  //     }
+  //   }
+
+  //   getWeather();
+
+  // }, [])
+
+
+  async function handleSearch() {
+    try {
+      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?zip=${zipcode},us&appid=${API_KEY}&units=metric`)
+
+      if(response.ok) {
         const data = await response.json()
         setWeather(data)
         console.log(data)
-      } catch (e) {
-        console.log(e)
       }
+      else {
+        console.log("Something wrong, try again")
+      }
+      
+    } catch (e) {
+      console.log(e)
     }
-
-    getWeather();
-
-  }, [zipcode])
+  }
 
   return (
     <>
@@ -31,10 +52,25 @@ function App() {
 
       <div className='zipcode-input'>
         <input onChange={(e) => setZipcode(e.target.value)} type="text" placeholder='Enter your zipcode' />
+        <button onClick={handleSearch}>Search</button>
       </div>
 
+      {/* Check if we have the data to display */}
+
       <div className='weather-display'>
-        {/* <pre>{weather}</pre> */}
+      {typeof weather.main == 'undefined' ? (
+        <div>
+          <p>No data to display, please enter your zipcode</p>
+        </div>)
+        :
+        (
+          <>
+          <h3>The current weather at {weather.name}, USA</h3>
+          <p><b>Temperature:</b> {weather.main.temp} Celcius</p>
+          <p><b>Descriptions:</b> {weather.weather[0].main}, {weather.weather[0].description} </p>
+          </>
+        )
+      }
       </div>
     </>
   )
