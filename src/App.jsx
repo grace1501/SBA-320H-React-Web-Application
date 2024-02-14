@@ -30,7 +30,7 @@ function App() {
       <h2>United States</h2>
 
       <div className='zipcode-input'>
-        <input onChange={(e) => setCity(e.target.value)} type="text" placeholder='Enter your zipcode' />
+        <input onChange={(e) => setZipcode(e.target.value)} type="text" placeholder='Enter your zipcode' />
       </div>
 
       <div className='weather-display'>
