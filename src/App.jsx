@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 
 const API_KEY = 'c7a33ec5d9e47c3e58af2976fbb65e87'
@@ -6,7 +6,7 @@ const API_KEY = 'c7a33ec5d9e47c3e58af2976fbb65e87'
 function App() {
   const [zipcode, setZipcode] = useState("60559")
   const [weather, setWeather] = useState({})
-  
+  const displayRef = useRef(null)
 
   // SHOULD NOT USE USEEFFECT: TOO MANY UNNECESSARY CALLs TO API
   // useEffect(() => {
@@ -37,9 +37,8 @@ function App() {
         console.log(data)
       }
       else {
-        console.log("Something wrong, try again")
+        setWeather({})
       }
-      
     } catch (e) {
       console.log(e)
     }
@@ -57,7 +56,7 @@ function App() {
 
       {/* Check if we have the data to display */}
 
-      <div className='weather-display'>
+      <div ref={displayRef} className='weather-display'>
       {typeof weather.main == 'undefined' ? (
         <div>
           <p>No data to display, please enter your zipcode</p>
@@ -67,7 +66,11 @@ function App() {
           <>
           <h3>The current weather at {weather.name}, USA</h3>
           <p><b>Temperature:</b> {weather.main.temp} Celcius</p>
+          <p><b>Feels like: </b> {weather.main.feels_like} Celcius</p>
+
           <p><b>Descriptions:</b> {weather.weather[0].main}, {weather.weather[0].description} </p>
+          
+          <p><b>Humidity: </b> {weather.main.humidity}%</p>
           </>
         )
       }
